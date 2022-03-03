@@ -27,18 +27,42 @@ const contactSchema = new mongoose.Schema({
 const contact = mongoose.model('Contact', contactSchema);
 
 
-// Get all contacts
-app.post("/", function(req, res) { 
-
-    console.log("Post request received");
-
-});
+let user_id;
 
 app.get("/", function(req, res) {
     res.render("home");
 });
 
+app.post("/", function(req, res) { 
 
+    console.log("Post request received");
+    let email = req.body.email;
+    let password = req.body.password;
+    
+    contact.findOne({email:email}, function(err, foundUser){
+        if(err){
+            console.log(err);
+        } else {
+            if(foundUser){
+                if(foundUser.password === password){
+                    user_id = foundUser._id;
+                    res.redirect("/contact");
+                } else {
+                    res.send("Incorrect password");
+                }
+            } else {
+                res.send("User not found");
+            }
+        }
+    });
+});
+
+app.get("/contact", function(req, res) {
+    res.render("contact");
+    
+    console.log(user_id);
+    
+});
 app.route("/register")
 .get(function(req, res) {
     res.render("register");
@@ -62,6 +86,28 @@ app.route("/register")
             console.log(err);
         }
     });
+});
+
+app.post("/addContact", function(req,res){
+    console.log("Get request received");
+    let name = req.body.name;
+    let number = req.body.number;
+    let email = req.body.email;
+
+    console.log(name);
+    console.log(number);
+    console.log(email);
+    console.log(user_id);
+
+    contact.findByIdAndUpdate(user_id,{$push : {contacts:{"name": name, "number": number, "email":email}}},  function(err){
+        if(err){
+            console.log(err);
+        }else{
+            console.log("Contact added");
+            res.redirect("/contact");
+        }
+    });
+
 });
 
 app.listen(3000, function() {console.log("Server started on port 3000");});
