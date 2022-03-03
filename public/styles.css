@@ -22,7 +22,16 @@
     margin: auto;
 }
 
-.form-control{
+.table-form{
+
     text-align: center;
-    width: 25%;
+    margin: auto;
+    font-family: "Montserrat";
+}
+
+.form-heading{
+    padding-bottom: 2rem;
+}
+.table{
+    empty-cells: hide;
 }

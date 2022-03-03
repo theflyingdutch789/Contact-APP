@@ -28,6 +28,8 @@ const contact = mongoose.model('Contact', contactSchema);
 
 
 let user_id;
+const defaultItems = [];
+
 
 app.get("/", function(req, res) {
     res.render("home");
@@ -46,6 +48,7 @@ app.post("/", function(req, res) {
             if(foundUser){
                 if(foundUser.password === password){
                     user_id = foundUser._id;
+                    
                     res.redirect("/contact");
                 } else {
                     res.send("Incorrect password");
@@ -58,11 +61,19 @@ app.post("/", function(req, res) {
 });
 
 app.get("/contact", function(req, res) {
-    res.render("contact");
-    
-    console.log(user_id);
-    
+    contact.findOne({_id:user_id}, function(err, foundUser){
+        if(err){
+            console.log(err);
+        } else {
+            if(foundUser.contacts){
+                res.render("contact", {contacts: foundUser.contacts});
+            } else {
+                res.render("contact", {contacts: defaultItems});
+            }   
+        }
+    }); 
 });
+
 app.route("/register")
 .get(function(req, res) {
     res.render("register");
@@ -93,11 +104,6 @@ app.post("/addContact", function(req,res){
     let name = req.body.name;
     let number = req.body.number;
     let email = req.body.email;
-
-    console.log(name);
-    console.log(number);
-    console.log(email);
-    console.log(user_id);
 
     contact.findByIdAndUpdate(user_id,{$push : {contacts:{"name": name, "number": number, "email":email}}},  function(err){
         if(err){

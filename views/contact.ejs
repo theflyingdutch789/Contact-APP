@@ -1,4 +1,11 @@
 <%- include('partials/header'); -%>
+    <form class="form-inline" action="/logout" method="get">
+        <button class="btn btn-success float-right" type="button">Logout</button>
+    </form>
+    </nav>
+</div>
+</div>
+<section >
     <div class="container-fluid contacts">
         <h1>Welcome to the Contacts App</h1>
     
@@ -7,13 +14,13 @@
         <form action="/addContact" method="post">
             <!-- Name input -->
             <div class="form-outline mb-4">
-              <input type="text" name="name" id="form4Example1" class="form-control" />
+              <input type="text" name="name" id="form4Example1" class="form-control" required/>
               <label class="form-label" for="form4Example1">Name</label>
             </div>
         
             <!-- Number input -->
             <div class="form-outline mb-4">
-                <input type="number" name="number" id="form4Example3" class="form-control" />
+                <input type="number" name="number" id="form4Example3" class="form-control" required />
                 <label class="form-label" for="form4Example3">Number</label>
               </div>
             
@@ -29,5 +36,27 @@
           </form>
     </div>
 
+    <div class="container table-form">
+        <h1 class="form-heading">Saved Contacts</h1>
+        <table class="table table-light table-hover">
+            <thead>
+              <tr>
+                
+                <th scope="col">Name</th>
+                <th scope="col">Number</th>
+                <th scope="col">Email</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% contacts.forEach(function(contact){%>
+              <tr>
+                <td><%= contact.name %></td>
+                <td><%= contact.number %></td>
+                <td><%= contact.email %></td>
+              </tr>
+            <%  }); %>   
+            </tbody>
+          </table>
+    </div>
     
 <%- include('partials/footer'); -%>
