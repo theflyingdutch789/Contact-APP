@@ -39,3 +39,9 @@
 #table-show{
     display: block;
 }
+.padd-2-l{
+    padding-left: 2rem;
+    font-family: "Poppins";
+    font-weight: bolder;
+    font-size: 1.75rem;
+}
