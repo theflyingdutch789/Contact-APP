@@ -32,6 +32,6 @@
 .form-heading{
     padding-bottom: 2rem;
 }
-.table{
+table{
     empty-cells: hide;
 }

@@ -2,10 +2,22 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+// const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-
 app.set("view engine", "ejs");
+
+app.use(session({
+    secret: "Our little secret.",
+    resave: false,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Set up default mongoose connection
 const mongoDB = "mongodb://localhost/contactDB";
@@ -23,55 +35,61 @@ const contactSchema = new mongoose.Schema({
     }]
 });
 
+contactSchema.plugin(passportLocalMongoose);
+
 // Initalize the model
-const contact = mongoose.model('Contact', contactSchema);
+const contact = new mongoose.model('Contact', contactSchema);
 
-
-let user_id;
-const defaultItems = [];
-
-
-app.get("/", function(req, res) {
-    res.render("home");
+passport.use(contact.createStrategy());
+passport.serializeUser(function(contact, done) {
+    done(null, contact);
+});
+  
+passport.deserializeUser(function(contact, done) {
+    done(null, contact);
 });
 
-app.post("/", function(req, res) { 
 
-    console.log("Post request received");
-    let email = req.body.email;
-    let password = req.body.password;
+let user_id = null;
+const defaultItems = [];
+
+app.route("/")
+
+.get(function(req, res) {
+    if (req.isAuthenticated()){
+        res.redirect("/contact");
+    } else{
+    res.render("home");}
+})
+
+.post(passport.authenticate("local"), function(req, res) { 
+
+    console.log("Auth request received");
+    user_id = req.user._id;
+    console.log(user_id);
     
-    contact.findOne({email:email}, function(err, foundUser){
-        if(err){
-            console.log(err);
-        } else {
-            if(foundUser){
-                if(foundUser.password === password){
-                    user_id = foundUser._id;
-                    
-                    res.redirect("/contact");
-                } else {
-                    res.send("Incorrect password");
-                }
-            } else {
-                res.send("User not found");
-            }
-        }
-    });
+    res.redirect("/contact");
 });
 
 app.get("/contact", function(req, res) {
-    contact.findOne({_id:user_id}, function(err, foundUser){
-        if(err){
-            console.log(err);
-        } else {
-            if(foundUser.contacts){
-                res.render("contact", {contacts: foundUser.contacts});
+    if (req.isAuthenticated()){
+        contact.findOne({_id:user_id}, function(err, foundUser){
+            if(err){
+                console.log(err);
             } else {
-                res.render("contact", {contacts: defaultItems});
-            }   
-        }
-    }); 
+                if(foundUser){
+                if(foundUser.contacts !== null){
+                    res.render("contact", {contacts: foundUser.contacts});
+                } else {
+                    res.render("contact", {contacts: defaultItems});
+                }   
+            }}
+        }); 
+    }
+    else{
+        res.redirect("/");
+    }
+    
 });
 
 app.route("/register")
@@ -84,17 +102,12 @@ app.route("/register")
     let email = req.body.email;
     let password = req.body.password;
     let secret = req.body.secret;
-    let newContact = new contact({
-        email: email,
-        password: password,
-        secret: secret
-    });
-    newContact.save(function(err) {
-        if(!err){
-            console.log("Contact saved");
-            res.redirect("/");
-        }else{
+    contact.register({username: email}, password, function (err,user){
+        if(err){
             console.log(err);
+            res.redirect("/register");
+        }else{
+            res.redirect("/");
         }
     });
 });
@@ -114,6 +127,13 @@ app.post("/addContact", function(req,res){
         }
     });
 
+});
+
+app.get("/logout", function(req,res){
+    console.log("Logout request received");
+    user_id = null;
+    req.logout();
+    res.redirect("/");
 });
 
 app.listen(3000, function() {console.log("Server started on port 3000");});
