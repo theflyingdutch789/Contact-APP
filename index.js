@@ -1,3 +1,5 @@
+
+
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -10,6 +12,7 @@ const passportLocalMongoose = require("passport-local-mongoose");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
+
 
 app.use(session({
     secret: "Our little secret.",
@@ -52,6 +55,7 @@ passport.deserializeUser(function(contact, done) {
 
 let user_id = null;
 const defaultItems = [];
+let showtable = 'table-show';
 
 app.route("/")
 
@@ -78,10 +82,12 @@ app.get("/contact", function(req, res) {
                 console.log(err);
             } else {
                 if(foundUser){
-                if(foundUser.contacts !== null){
-                    res.render("contact", {contacts: foundUser.contacts});
+                if(foundUser.contacts.length > 0){
+                    showtable = 'table-show';
+                    res.render("contact", {contacts: foundUser.contacts, sTable: showtable});
                 } else {
-                    res.render("contact", {contacts: defaultItems});
+                    showtable = 'table-hide';
+                    res.render("contact", {contacts: defaultItems, sTable: showtable});
                 }   
             }}
         }); 
@@ -102,7 +108,7 @@ app.route("/register")
     let email = req.body.email;
     let password = req.body.password;
     let secret = req.body.secret;
-    contact.register({username: email}, password, function (err,user){
+    contact.register({username: email, secret: secret}, password, function (err,user){
         if(err){
             console.log(err);
             res.redirect("/register");
@@ -136,4 +142,21 @@ app.get("/logout", function(req,res){
     res.redirect("/");
 });
 
+app.post("/deleteContact", function(req,res){
+    console.log("Delete request received");
+    contact.findByIdAndUpdate(user_id, {$pull: {contacts: {_id:req.body.id}}}, function(err){
+        if(err){
+            console.log(err);
+        }else{
+            console.log("Contact deleted");
+            res.redirect("/contact");
+        }
+    });
+});
+
 app.listen(3000, function() {console.log("Server started on port 3000");});
+
+
+// 885621435326-dplvk0djmv28tlq0m1mdkj4920gbcbo5.apps.googleusercontent.com
+
+// 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

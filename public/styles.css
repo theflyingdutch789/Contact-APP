@@ -32,6 +32,10 @@
 .form-heading{
     padding-bottom: 2rem;
 }
-table{
-    empty-cells: hide;
+
+#table-hide{
+    display: none;
+}
+#table-show{
+    display: block;
 }

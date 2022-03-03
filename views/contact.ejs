@@ -36,15 +36,16 @@
           </form>
     </div>
 
-    <div class="container table-form">
+    <div class="container table-form"  id= <%= sTable  %>>
         <h1 class="form-heading">Saved Contacts</h1>
-        <table class="table table-light table-hover">
-            <thead>
-              <tr>
+        <table class="table table-hide table-light table-hover">
+            <thead >
+              <tr >
                 
                 <th scope="col">Name</th>
                 <th scope="col">Number</th>
                 <th scope="col">Email</th>
+                <th scope="col">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -53,10 +54,21 @@
                 <td><%= contact.name %></td>
                 <td><%= contact.number %></td>
                 <td><%= contact.email %></td>
+                <th scope="row">
+                    <div class="">
+                        <form action="/deleteContact" method="post">
+                            <input class="form-check-input" name="id" type="checkbox" value=<%= contact._id%>  onchange="this.form.submit()"/>
+                        </form>
+                    </div>
+                  </th>
               </tr>
             <%  }); %>   
             </tbody>
           </table>
+          
     </div>
+    <% if (sTable == "table-hide"){ %>
+        <p class="container contacts">Add Contacts to Reveal Contacts Table</p>
+    <% } %>
     
 <%- include('partials/footer'); -%>
