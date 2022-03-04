@@ -28,7 +28,7 @@ node index.js
 Then open localhost:3000 in the brower to render the web-app.
 
 
-### Usecase
+### Test-cases
 
 * If the username already exist in database, then it is not allowed to be created again.
 * If the contact number already exist in database for the same user, then the contact is not allowed to be created again.
