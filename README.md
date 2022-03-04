@@ -6,12 +6,12 @@ User authentication and Session Cookie implemented using Javascript Library Pass
 Passport Js uses pbkdf2 (sha256) for hashing the password and storing it in database.
 Session cookies are maintained such that even if user changes tabs or goes anywhere after login, the user will stay authenticated and doesn't need to re-login. Session Cookies are valid till the browser closes.
 
-Warning :- App won't login if a user account doesnt exist in the database. By default the app will route to "/" which is login page. Since Error messages are not implemented in this version, if a user doesnt exist in database, the app will keep rerouting to the login page. Create a account using Sign up button before proceeding to login.  
+Warning :- App won't login if a user account doesn't exist in the database. By default the app will route to "/" which is login page. Since Error messages are not implemented in this version, if a user doesnt exist in database, the app will keep re-routing after failed authentication to the login page. Create a account using Sign up button before proceeding to login.  
 
-## Deployed App in Heroku Server
+### Deployed App in Heroku Server
 https://contact897-app.herokuapp.com/
 
-## Usage
+### Usage
 
 Clone the project in cli using 
 ```bash
