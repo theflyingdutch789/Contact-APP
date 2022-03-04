@@ -8,7 +8,10 @@ Passport Js uses pbkdb2 for hashing the password and storing it in database
 
 ## Usage
 
-Clone the project in cli using git clone
+Clone the project in cli using 
+```bash
+git clone https://github.com/theflyingdutch789/Contact-APP.git
+```
 Install dependencies
 
 ```bash
