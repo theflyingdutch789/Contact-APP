@@ -1,9 +1,9 @@
 # Contact App
 
 App created as per requirements for the interview in Zoho.  
-Full stack contact App created Using Node JS, Mongo DB and EJS.  
+Full stack contact App created Using Node JS, Express JS, Mongo DB, Mongoose JS and EJS.  
 User authentication and Session Cookie implemented using Javascript Library Passport JS.
-Passport Js uses pbkdb2 for hashing the password and storing it in database
+Passport Js uses pbkdf2 (sha256) for hashing the password and storing it in database
 
 ## Deployed App in Heroku Server
 https://contact897-app.herokuapp.com/
